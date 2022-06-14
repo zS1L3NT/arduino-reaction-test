@@ -6,7 +6,7 @@
 #define BUTTON D5
 
 int pressed = LOW;
-int led = 5;
+int seqIndex = 4;
 int iter = 0;
 int maxIter = 10;
 
@@ -20,6 +20,37 @@ void setup()
   pinMode(LED_4, OUTPUT);
   pinMode(LED_5, OUTPUT);
   pinMode(BUTTON, INPUT);
+}
+
+void runSeqIndex(int index)
+{
+  digitalWrite(LED_1, LOW);
+  digitalWrite(LED_2, LOW);
+  digitalWrite(LED_3, LOW);
+  digitalWrite(LED_4, LOW);
+  digitalWrite(LED_5, LOW);
+
+  switch (index)
+  {
+  case 0:
+    digitalWrite(LED_1, HIGH);
+    break;
+  case 1:
+  case 7:
+    digitalWrite(LED_2, HIGH);
+    break;
+  case 2:
+  case 6:
+    digitalWrite(LED_3, HIGH);
+    break;
+  case 3:
+  case 5:
+    digitalWrite(LED_4, HIGH);
+    break;
+  case 4:
+    digitalWrite(LED_5, HIGH);
+    break;
+  }
 }
 
 void lose()
@@ -70,26 +101,22 @@ void loop()
 {
   if (maxIter == -1)
   {
-    if (digitalRead(BUTTON) == HIGH) {
-      digitalWrite(LED_1, HIGH);
+    if (digitalRead(BUTTON) == HIGH)
+    {
+      runSeqIndex(0);
       delay(500);
-      
-      digitalWrite(LED_1, LOW);
-      digitalWrite(LED_2, HIGH);
+
+      runSeqIndex(1);
       delay(500);
-      
-      digitalWrite(LED_2, LOW);
-      digitalWrite(LED_3, HIGH);
+
+      runSeqIndex(2);
       delay(500);
-      
-      digitalWrite(LED_3, LOW);
-      digitalWrite(LED_4, HIGH);
+
+      runSeqIndex(3);
       delay(500);
-      
-      digitalWrite(LED_4, LOW);
 
       pressed = LOW;
-      led = 5;
+      seqIndex = 4;
       iter = 0;
       maxIter = 10;
     }
@@ -100,29 +127,7 @@ void loop()
   // When just got to a new LED
   if (iter == 0)
   {
-    switch (led)
-    {
-    case 5:
-      digitalWrite(LED_1, LOW);
-      digitalWrite(LED_5, HIGH);
-      break;
-    case 4:
-      digitalWrite(LED_5, LOW);
-      digitalWrite(LED_4, HIGH);
-      break;
-    case 3:
-      digitalWrite(LED_4, LOW);
-      digitalWrite(LED_3, HIGH);
-      break;
-    case 2:
-      digitalWrite(LED_3, LOW);
-      digitalWrite(LED_2, HIGH);
-      break;
-    case 1:
-      digitalWrite(LED_2, LOW);
-      digitalWrite(LED_1, HIGH);
-      break;
-    }
+    runSeqIndex(seqIndex);
   }
 
   pressed = max(digitalRead(BUTTON), pressed);
@@ -130,32 +135,27 @@ void loop()
   // When about to move to the next LED
   if (iter == maxIter)
   {
-    // When the LED is Green
-    if (led == 1)
+    if (pressed == HIGH)
     {
-      led = 5;
-      maxIter--;
-
-      if (pressed == LOW)
+      // When the LED is Green
+      if (seqIndex == 0)
+      {
+        maxIter--;
+        delay(500);
+      }
+      else
       {
         maxIter = -1;
         lose();
-        return;
       }
 
-      delay(500);
+      return;
     }
-    else
-    {
-      led--;
 
-      if (pressed == HIGH)
-      {
-        maxIter = -1;
-        lose();
-        return;
-      }
-    }
+    seqIndex++;
+    if (seqIndex == 8)
+      seqIndex = 0;
+
     iter = 0;
     pressed = LOW;
   }
@@ -164,7 +164,8 @@ void loop()
     iter++;
   }
 
-  if (maxIter == -1) {
+  if (maxIter == -1)
+  {
     win();
   }
 
