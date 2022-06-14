@@ -5,7 +5,7 @@
 #define LED_5 D8
 #define BUTTON D5
 
-#define MIN_ITERS 5
+#define MIN_ITERS 2
 #define MAX_ITERS 10
 #define LOOP_DELAY 20
 
