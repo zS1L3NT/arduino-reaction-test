@@ -70,6 +70,30 @@ void loop()
 {
   if (maxIter == -1)
   {
+    if (digitalRead(BUTTON) == HIGH) {
+      digitalWrite(LED_1, HIGH);
+      delay(500);
+      
+      digitalWrite(LED_1, LOW);
+      digitalWrite(LED_2, HIGH);
+      delay(500);
+      
+      digitalWrite(LED_2, LOW);
+      digitalWrite(LED_3, HIGH);
+      delay(500);
+      
+      digitalWrite(LED_3, LOW);
+      digitalWrite(LED_4, HIGH);
+      delay(500);
+      
+      digitalWrite(LED_4, LOW);
+
+      pressed = LOW;
+      led = 5;
+      iter = 0;
+      maxIter = 10;
+    }
+
     return;
   }
 
@@ -116,6 +140,7 @@ void loop()
       {
         maxIter = -1;
         lose();
+        return;
       }
 
       delay(500);
@@ -128,6 +153,7 @@ void loop()
       {
         maxIter = -1;
         lose();
+        return;
       }
     }
     iter = 0;
