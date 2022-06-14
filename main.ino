@@ -13,7 +13,7 @@ int pressed = LOW;
 int seqIndex = 4;
 
 int iter = 0;
-int totalIters = MAX_ITERS;
+int totalIters = MIN_ITERS;
 
 void setup()
 {
